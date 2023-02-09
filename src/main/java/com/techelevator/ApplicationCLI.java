@@ -3,7 +3,6 @@ package com.techelevator;
 import com.techelevator.filereader.InventoryFileReader;
 import com.techelevator.items.Inventory;
 import com.techelevator.items.ShoppingCart;
-import com.techelevator.view.CashRegister;
 import com.techelevator.view.Menu;
 
 public class ApplicationCLI {
@@ -45,12 +44,15 @@ public class ApplicationCLI {
 						switch (menu.menuNavigator()){
 							// 2a (1) Take Money
 							case "1": menu.takeMoney(cart);
+							continue;
 							// 2b (2) Select Products
 							case "2": menu.selectProducts(inventory, cart);
+							continue;
 							// 2c (3) Complete Sale
 							case "3": cart.checkout(inventory);
-
+							break;
 						}
+						break;
 					}
 					continue;
 				// (3) Quit
@@ -60,6 +62,7 @@ public class ApplicationCLI {
 				default:
 					System.out.println("Input only accepts 1, 2, or 3. Please try again.");
 			}
+			break;
 		}
 		}
 
@@ -85,4 +88,4 @@ public class ApplicationCLI {
 	//feel free to create private methods here if you are feeling up to it, so run() doesn't get so long...
 
 
-}
+
