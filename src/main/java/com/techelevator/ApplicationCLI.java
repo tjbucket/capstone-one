@@ -13,6 +13,16 @@ public class ApplicationCLI {
 	 */
 	public void run() {
 
+		//Make an Inventory instance
+		//Make a Menu instance
+		//
+
+
+
+		//Call InventoryFileReader to read in the txt file
+		//List <CandyStoreItem> bob = readFile ()
+
+
 		// Good place to create references for UserInterface, Inventory class, and Register class.... (There should NEVER be more than one instance of these)
 
 
