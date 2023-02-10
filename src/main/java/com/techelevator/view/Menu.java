@@ -44,6 +44,7 @@ public class Menu {
             amountAllowed = amountToCheck;
         }
         System.out.print("Please enter an amount up to " + currencyFormat(amountAllowed)+":");
+        //TODO Convert back to int, change from currency format, mention whole numbers.
         BigDecimal inputNumber = new BigDecimal(Double.parseDouble(menuNavigator()));
         if(inputNumber.compareTo(amountAllowed) <= 0) {
             cart.addTotalMoney(inputNumber);
@@ -59,6 +60,7 @@ public class Menu {
         if (!(inventory.getInventory().containsKey(candySelection))) {
             System.out.println("Item ID not found. Please try again.");
         }
+        //TODO Fix me here!
         System.out.println("Please add a quantity: ");
         int quantityRequested = Integer.parseInt(menuNavigator());
                                                                          //Are you proud of me Dylan?
@@ -68,8 +70,7 @@ public class Menu {
             System.out.println("Quantity must be greater than 0. Please try again.");
         } else if ((possibleItemCost.compareTo(cart.currentCustomerBalance())) <= 0) {
             if (inventory.selectInventoryItem(candySelection, quantityRequested)) {
-                cart.addToProductMap(candySelection, quantityRequested);
-                cart.addToProductCost(possibleItemCost);
+                cart.addProduct(candySelection, quantityRequested, possibleItemCost, inventory);
             } else {
                 System.out.println("Amount requested is greater than amount available. Please try again.");
             }
