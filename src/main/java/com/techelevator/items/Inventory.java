@@ -1,5 +1,6 @@
 package com.techelevator.items;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +23,6 @@ public class Inventory {
     }
 
     public void displayInventory() {
-        String banner = "Id Name Wrapper Qty Price";
-        System.out.println(banner);
-
         // Get all keys (inventory IDs) from the map and put into a String[]
         // Sorting the String[] of keys will give alphabetical order
         String[] sortedKeys = inventory.keySet().toArray(new String[0]);
@@ -37,9 +35,17 @@ public class Inventory {
         String[] columnQty = new String[sortedKeys.length];
         String[] columnPrice = new String[sortedKeys.length];
 
+        // Need longest CandyStoreItem name length for formatting later in this method
+        int maxNameLength = 0;
+
         for (int i = 0; i < sortedKeys.length; i++) {
             columnId[i] = inventory.get(sortedKeys[i]).getInventoryId();
             columnName[i] = inventory.get(sortedKeys[i]).getProductName();
+
+            // Get max length of names
+            if (columnName[i].length() > maxNameLength) {
+                maxNameLength = columnName[i].length();
+            }
 
             // Change boolean to "Y" or "N"
             columnWrapper[i] = inventory.get(sortedKeys[i]).hasWrapper() ? "Y" : "N";
@@ -48,14 +54,34 @@ public class Inventory {
             columnQty[i] = inventory.get(sortedKeys[i]).getProductQuantity() == 0 ? "Sold Out" : String.valueOf(inventory.get(sortedKeys[i]).getProductQuantity());
 
             // Change price from BigDecimal to String
-            columnPrice[i] = inventory.get(sortedKeys[i]).getPrice().toString();
+            columnPrice[i] = NumberFormat.getCurrencyInstance().format(inventory.get(sortedKeys[i]).getPrice());
         }
 
+        // Styling format
+        String columnIdFormat = "%-2.2s"; // Fixed size 2 characters, left aligned
+        String columnNameFormat = "%-" + maxNameLength + "." + maxNameLength + "s"; // Fixed size based on maxNameLength, left aligned
+        String columnWrapperFormat = "%-7.7s"; // Fixed size 7 characters, left aligned
+        String columnQtyFormat = "%-8.8s"; // Fixed size 8 characters, left aligned
+        String columnPriceFormat = "%-5.5s"; // Fixed size 5 characters, left aligned
+
+        String padBetweenColumns = "   "; // Fixed size 3 padding between columns
+
+        // Create String of format info
+        String formatInfo = columnIdFormat + padBetweenColumns
+                + columnNameFormat + padBetweenColumns
+                + columnWrapperFormat + padBetweenColumns
+                + columnQtyFormat + padBetweenColumns
+                + columnPriceFormat;
+
+        // Print column headers with format info
+        System.out.format(formatInfo, "Id", "Name", "Wrapper", "Qty", "Price");
+        System.out.println();
+
+        // Print all columns of data with format info
         for (int i = 0; i < sortedKeys.length; i++) {
-            System.out.println(columnId[i] + columnName[i] + columnWrapper[i] + columnQty[i] + columnPrice[i]);
+            System.out.format(formatInfo, columnId[i], columnName[i], columnWrapper[i], columnQty[i], columnPrice[i]);
+            System.out.println();
         }
-
-        //TODO format String columns to have equal spacing
 
     }
 
@@ -74,12 +100,10 @@ public class Inventory {
             return false;
         }
     }
-
-
+    
     //Getters
     public Map<String, CandyStoreItem> getInventory() {
         return inventory;
     }
-
 
 }
