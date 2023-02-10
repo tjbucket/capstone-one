@@ -42,9 +42,6 @@ public class ShoppingCart {
     }
 
     public void checkout(Inventory inventory) {
-//        for (Map.Entry<String, Integer> mapSet : productMap.entrySet()) {
-//            System.out.println(mapSet.getValue() + "|   2" + inventory.getInventory().get(mapSet.getKey()).getProductName());
-//        }
 
         // Create empty String[] to hold each column of data for display
         String[] columnQty = new String[productMap.size()];
@@ -71,7 +68,7 @@ public class ShoppingCart {
             }
 
             // Expand product type abbreviations to full words
-            switch (inventory.getInventory().get(singleEntry.getKey()).getProductName()) {
+            switch (inventory.getInventory().get(singleEntry.getKey()).getProductType()) {
                 case "CH":
                     columnType[counter] = "Chocolate Confectionery";
                 case "SR":
@@ -84,7 +81,7 @@ public class ShoppingCart {
 
             // Get max length of product types
             if (columnType[counter].length() > maxTypeLength) {
-                maxTypeLength = columnName[counter].length();
+                maxTypeLength = columnType[counter].length();
             }
 
             // Format BigDecimal to String with $
@@ -104,7 +101,7 @@ public class ShoppingCart {
         String columnNameFormat = "%-" + maxNameLength + "." + maxNameLength + "s"; // Fixed size based on maxNameLength, left aligned
         String columnTypeFormat = "%-" + maxTypeLength + "." + maxTypeLength + "s"; // Fixed size based on maxNameLength, left aligned
         String columnUnitPriceFormat = "%-5.5s"; // Fixed size 5 characters, left aligned
-//        String columnTotalCostFormat = "%-5.5s"; // Fixed size 5 characters, left aligned
+        String columnTotalCostFormat = "%s"; // Fixed size 5 characters, left aligned
 
 
         String padBetweenColumns = "   "; // Fixed size 3 padding between columns
@@ -113,8 +110,8 @@ public class ShoppingCart {
         String formatInfo = columnQtyFormat + padBetweenColumns
                 + columnNameFormat + padBetweenColumns
                 + columnTypeFormat + padBetweenColumns
-                + columnUnitPriceFormat + padBetweenColumns;
-//                + columnTotalCostFormat;
+                + columnUnitPriceFormat + padBetweenColumns
+                + columnTotalCostFormat;
 
         System.out.println();
 
@@ -128,44 +125,57 @@ public class ShoppingCart {
 
         // Only handles 7 denominations
         int[] countDenominations = new int[7];
+        BigDecimal[] bigDecimals = new BigDecimal[]{
+            new BigDecimal(20),
+            new BigDecimal(10),
+            new BigDecimal(5),
+            new BigDecimal(1),
+            new BigDecimal("0.25"),
+            new BigDecimal("0.1"),
+            new BigDecimal("0.05")
+        };
 
-        countDenominations[0] = customerChange.divideToIntegralValue(new BigDecimal(20)).intValue();
-        countDenominations[1] = customerChange.divideToIntegralValue(new BigDecimal(10)).intValue();
-        countDenominations[2] = customerChange.divideToIntegralValue(new BigDecimal(5)).intValue();
-        countDenominations[3] = customerChange.divideToIntegralValue(new BigDecimal(1)).intValue();
-        countDenominations[4] = customerChange.divideToIntegralValue(new BigDecimal("0.25")).intValue();
-        countDenominations[5] = customerChange.divideToIntegralValue(new BigDecimal("0.1")).intValue();
-        countDenominations[6] = customerChange.divideToIntegralValue(new BigDecimal("0.05")).intValue();
+        for (int i = 0; i < bigDecimals.length; i++) {
+            countDenominations[i] = customerChange.divideToIntegralValue(bigDecimals[i]).intValue();
+            customerChange = customerChange.remainder(bigDecimals[i]);
+        }
 
         System.out.println();
         System.out.println("Total: " + NumberFormat.getCurrencyInstance().format(totalCostOfProducts));
 
         System.out.println();
-        System.out.println("Change: " + NumberFormat.getCurrencyInstance().format(customerChange));
+        System.out.println("Change: " + NumberFormat.getCurrencyInstance().format(currentCustomerBalance()));
 
 
-        if (countDenominations[0] > 1) {
-            System.out.println("(" + countDenominations[0] + ") Twenties");
-        } else {
-            System.out.println("(1) Twenty");
+        if (countDenominations[0] > 0) {
+            if (countDenominations[0] > 1) {
+                System.out.println("(" + countDenominations[0] + ") Twenties");
+            } else {
+                System.out.println("(1) Twenty");
+            }
         }
-
         for (int i = 1; i < countDenominations.length; i++) {
             if (countDenominations[i] > 0) {
                 String newSegment = "(";
                 switch (i) {
                     case 1:
                         newSegment = newSegment + countDenominations[i] + ") Ten";
+                        break;
                     case 2:
                         newSegment = newSegment + countDenominations[i] + ") Five";
+                        break;
                     case 3:
                         newSegment = newSegment + countDenominations[i] + ") One";
+                        break;
                     case 4:
                         newSegment = newSegment + countDenominations[i] + ") Quarter";
+                        break;
                     case 5:
                         newSegment = newSegment + countDenominations[i] + ") Dime";
+                        break;
                     case 6:
                         newSegment = newSegment + countDenominations[i] + ") Nickel";
+                        break;
                 }
                 if (countDenominations[i] > 1) {
                     newSegment += "s";
@@ -175,8 +185,20 @@ public class ShoppingCart {
         }
 
         LogFileWriter.appendLogFile("CHANGE GIVEN: "
-                + NumberFormat.getCurrencyInstance().format(customerChange) + " "
-                + NumberFormat.getCurrencyInstance().format(customerChange.subtract(currentCustomerBalance())));
+                + NumberFormat.getCurrencyInstance().format(currentCustomerBalance()) + " "
+                + NumberFormat.getCurrencyInstance().format(customerChange));
 
+    }
+
+    public BigDecimal getTotalMoneyAdded() {
+        return totalMoneyAdded;
+    }
+
+    public BigDecimal getTotalCostOfProducts() {
+        return totalCostOfProducts;
+    }
+
+    public Map<String, Integer> getProductMap() {
+        return productMap;
     }
 }
