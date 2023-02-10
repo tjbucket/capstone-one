@@ -50,8 +50,8 @@ public class Inventory {
             // Change boolean to "Y" or "N"
             columnWrapper[i] = inventory.get(sortedKeys[i]).hasWrapper() ? "Y" : "N";
 
-            // Change quantity from int to String, unless it is 0, then change to "Sold Out"
-            columnQty[i] = inventory.get(sortedKeys[i]).getProductQuantity() == 0 ? "Sold Out" : String.valueOf(inventory.get(sortedKeys[i]).getProductQuantity());
+            // Change quantity from int to String, unless it is 0, then change to "SOLD OUT"
+            columnQty[i] = inventory.get(sortedKeys[i]).getProductQuantity() == 0 ? "SOLD OUT" : String.valueOf(inventory.get(sortedKeys[i]).getProductQuantity());
 
             // Change price from BigDecimal to String
             columnPrice[i] = NumberFormat.getCurrencyInstance().format(inventory.get(sortedKeys[i]).getPrice());
