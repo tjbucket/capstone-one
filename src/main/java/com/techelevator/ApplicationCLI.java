@@ -29,7 +29,6 @@ public class ApplicationCLI {
 		//while loop keeps menu up unless chosen to exit
 		while(true){
 			menu.displayMainMenu();
-			System.out.println("Please choose 1, 2, or 3: ");
 			// switch compares string to check for 1, 2, or 3 corresponding with different menu options
 			switch (menu.menuNavigator()){
 				// (1) Show Inventory

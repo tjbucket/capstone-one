@@ -16,17 +16,20 @@ public class Menu {
     }
 
     public void displayMainMenu(){
+        System.out.println();
         System.out.println("(1) Show Inventory");
         System.out.println("(2) Make Sale");
         System.out.println("(3) Quit");
-        System.out.println("Please enter a choice: ");
+        System.out.print("Please enter a choice: ");
     }
 
     public void displaySaleMenu(BigDecimal currentCustomerBalance){
+        System.out.println();
         System.out.println("(1) Take Money");
         System.out.println("(2) Select Products");
         System.out.println("(3) Complete Sale");
         System.out.println("Current Customer Balance: " + currencyFormat(currentCustomerBalance));
+        System.out.print("Please enter a choice: ");
     }
     // Takes any BigDecimal number and formats it as a string displaying it as USD
     public String currencyFormat(BigDecimal n){
@@ -40,8 +43,13 @@ public class Menu {
         if((amountToCheck.compareTo(amountAllowed)) == -1){
             amountAllowed = amountToCheck;
         }
-        System.out.println("Please enter an amount up to " + currencyFormat(amountAllowed));
-        cart.addTotalMoney(new BigDecimal(Integer.parseInt(menuNavigator())));
+        System.out.print("Please enter an amount up to " + currencyFormat(amountAllowed)+":");
+        BigDecimal inputNumber = new BigDecimal(Double.parseDouble(menuNavigator()));
+        if(inputNumber.compareTo(amountAllowed) <= 0) {
+            cart.addTotalMoney(inputNumber);
+        } else {
+            System.out.println("Amount added is invalid. Please try again.");
+        }
     }
 
     public void selectProducts(Inventory inventory, ShoppingCart cart) {

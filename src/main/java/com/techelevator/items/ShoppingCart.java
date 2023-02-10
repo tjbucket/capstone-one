@@ -14,11 +14,11 @@ public class ShoppingCart {
     }
 
     public void addToProductCost(BigDecimal cost){
-        totalCostOfProducts.add(cost);
+        totalCostOfProducts = totalCostOfProducts.add(cost);
     }
 
     public void addTotalMoney(BigDecimal input){
-        totalMoneyAdded.add(input);
+        totalMoneyAdded = totalMoneyAdded.add(input);
     }
 
     public BigDecimal currentCustomerBalance(){
@@ -27,5 +27,8 @@ public class ShoppingCart {
 
     public void checkout(Inventory inventory) {
         //TODO checkout
+        for (Map.Entry<String, Integer> mapSet : productMap.entrySet()) {
+            System.out.println(mapSet.getValue() + "|   2" + inventory.getInventory().get(mapSet.getKey()).getProductName());
+        }
     }
 }
