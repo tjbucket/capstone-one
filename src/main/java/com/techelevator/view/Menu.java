@@ -43,59 +43,65 @@ public class Menu {
         if((amountToCheck.compareTo(amountAllowed)) == -1){
             amountAllowed = amountToCheck;
         }
-        System.out.print("Please enter an amount up to " + currencyFormat(amountAllowed)+":");
-        //TODO Convert back to int, change from currency format, mention whole numbers.
-        BigDecimal inputNumber = new BigDecimal(Double.parseDouble(menuNavigator()));
+        System.out.printf("Please enter a whole dollar amount up to $%.0f: ", amountAllowed);
+        BigDecimal inputNumber;
+        while(true){
+            try{
+                inputNumber = new BigDecimal(Integer.parseInt(menuNavigator().trim()));
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Quantity must be inputted as an integer. Please input another number.");
+            }
+        }
+
         if(inputNumber.compareTo(amountAllowed) <= 0) {
             cart.addTotalMoney(inputNumber);
         } else {
             System.out.println("Amount added is invalid. Please try again.");
         }
     }
-
     public void selectProducts(Inventory inventory, ShoppingCart cart) {
+        // Displays choices from inventories and captures customer selection
         inventory.displayInventory();
-        System.out.println("Please use the item ID found in the first column to make a selection: ");
+        System.out.print("Please use the item ID found in the first column to make a selection: ");
         String candySelection = menuNavigator().toUpperCase();
+        // Checks to see if customer selection is contained within inventory map
         if (!(inventory.getInventory().containsKey(candySelection))) {
             System.out.println("Item ID not found. Please try again.");
-        }
-        //TODO Fix me here!
-        System.out.println("Please add a quantity: ");
-        int quantityRequested = Integer.parseInt(menuNavigator());
-                                                                         //Are you proud of me Dylan?
-        BigDecimal possibleItemCost = ((new BigDecimal(quantityRequested).multiply(inventory.getInventory().get(candySelection).getPrice())));
-        //Check valid input for quantity and ensures price is less than or equal to customer balance
-        if (quantityRequested < 0) {
-            System.out.println("Quantity must be greater than 0. Please try again.");
-        } else if ((possibleItemCost.compareTo(cart.currentCustomerBalance())) <= 0) {
-            if (inventory.selectInventoryItem(candySelection, quantityRequested)) {
-                cart.addProduct(candySelection, quantityRequested, possibleItemCost, inventory);
-            } else {
-                System.out.println("Amount requested is greater than amount available. Please try again.");
-            }
         } else {
-            System.out.println("Price of candy exceeds customer balance. Please try again.");
+            int quantityRequested;
+            System.out.print("Please choose a quantity to purchase. To cancel, enter zero: ");
+            while(true){
+                try{
+                    quantityRequested = Integer.parseInt(menuNavigator().trim());
+                    if (quantityRequested < 0){
+                        System.out.println("Number must be greater than or equal to zero. Please enter a new number");
+                        continue;
+                    }
+                    break;
+                } catch (NumberFormatException e){
+                    System.out.println("Quantity must be inputted as an integer. Please try again.");
+                }
+            }
+            // Returns them directly to submenu if they input 0
+            if (quantityRequested == 0) {
+                System.out.println("Returning you to menu.");
+                return;
+            }
+            // Calculates the total cost for the given amount of candy
+            BigDecimal possibleItemCost = ((new BigDecimal(quantityRequested).multiply(inventory.getInventory().get(candySelection).getPrice())));
+            // Check valid input for quantity and ensures price is less than or equal to customer balance
+            if ((possibleItemCost.compareTo(cart.currentCustomerBalance())) <= 0) {
+                // selectInventoryItem method attempts to subtract the amount requested from the total pieces of the desired candy.
+                // It will return true if the operation is successful and false otherwise.
+                if (inventory.selectInventoryItem(candySelection, quantityRequested)) {
+                    cart.addProduct(candySelection, quantityRequested, possibleItemCost, inventory);
+                } else {
+                    System.out.println("Amount requested is greater than amount available. Please try again.");
+                }
+            } else {
+                System.out.println("Price of candy exceeds customer funds. Please try again.");
+            }
         }
     }
-    // If (1) Show Inventory option is selected, there's a displayInventory() method
-    // Interact with inventory map
-    // Format the output here (instead of Inventory class)
-
-    // If (2) Make sale is selected, now there's a sub-menu to choose
-    // (2a) Take Money
-        // Interact with shopping cart
-    // (2b) Select Products
-        // Interact with Inventory
-        // Interact with shopping cart
-    // (2c) Complete sale
-        // Interact with cash register (which will pull from shopping cart)
-        // After cash register interaction, breaks to main menu loop
-        // Consider the edge case of nothing in the shopping cart, and still want to break out to main menu... where to implement this
-    // Display current customer balance $
-    // Need while loop to stay in this submenu (until (2c) Complete sale is selected)
-
-
-    // If (3) Quit is selected, break statement with message
-
 }

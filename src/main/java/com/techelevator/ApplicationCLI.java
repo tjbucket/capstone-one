@@ -1,6 +1,7 @@
 package com.techelevator;
 
 import com.techelevator.filereader.InventoryFileReader;
+import com.techelevator.filereader.LogFileWriter;
 import com.techelevator.items.Inventory;
 import com.techelevator.items.ShoppingCart;
 import com.techelevator.view.Menu;
@@ -20,6 +21,7 @@ public class ApplicationCLI {
 		InventoryFileReader fileReader = new InventoryFileReader();
 		Inventory inventory = new Inventory();
 		Menu menu = new Menu();
+		LogFileWriter DontTouchMe = new LogFileWriter();
 
 
 		//Call InventoryFileReader to read inventory file
@@ -27,7 +29,8 @@ public class ApplicationCLI {
 
 		System.out.println("Welcome to Silver Shamrocks Candy Company");
 		//while loop keeps menu up unless chosen to exit
-		while(true){
+		boolean outerLoop = true;
+		while(outerLoop){
 			menu.displayMainMenu();
 			// switch compares string to check for 1, 2, or 3 corresponding with different menu options
 			switch (menu.menuNavigator()){
@@ -37,7 +40,8 @@ public class ApplicationCLI {
 //				 (2) Make Sale
 				case "2":
 					ShoppingCart cart = new ShoppingCart();
-					while (true) {
+					boolean innerLoop = true;
+					while (innerLoop) {
 						// Displays sale menu options, continually updates as cart balance changes
 						menu.displaySaleMenu(cart.currentCustomerBalance());
 						switch (menu.menuNavigator()){
@@ -49,19 +53,21 @@ public class ApplicationCLI {
 							continue;
 							// 2c (3) Complete Sale
 							case "3": cart.checkout(inventory);
+							innerLoop = false;
 							break;
+							default:
+								System.out.println("Input only accepts 1, 2, or 3. Please try again.");
 						}
-						break;
 					}
 					continue;
 				// (3) Quit
 				case "3":
 					System.out.println("Thank you! Exiting program.");
+					outerLoop = false;
 					break;
 				default:
 					System.out.println("Input only accepts 1, 2, or 3. Please try again.");
 			}
-			break;
 		}
 		}
 
