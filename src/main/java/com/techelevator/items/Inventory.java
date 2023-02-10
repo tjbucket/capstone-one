@@ -74,6 +74,7 @@ public class Inventory {
                 + columnPriceFormat;
 
         // Print column headers with format info
+        System.out.println();
         System.out.format(formatInfo, "Id", "Name", "Wrapper", "Qty", "Price");
         System.out.println();
 
@@ -100,7 +101,7 @@ public class Inventory {
             return false;
         }
     }
-    
+
     //Getters
     public Map<String, CandyStoreItem> getInventory() {
         return inventory;
