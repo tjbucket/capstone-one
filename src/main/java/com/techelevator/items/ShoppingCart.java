@@ -83,7 +83,6 @@ public class ShoppingCart {
             if (columnType[counter].length() > maxTypeLength) {
                 maxTypeLength = columnType[counter].length();
             }
-
             // Format BigDecimal to String with $
             BigDecimal bigDecimalUnitPrice = inventory.getInventory().get(singleEntry.getKey()).getPrice();
             columnUnitPrice[counter] = NumberFormat.getCurrencyInstance().format(bigDecimalUnitPrice);
